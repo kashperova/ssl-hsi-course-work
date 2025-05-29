@@ -1,11 +1,12 @@
 import os
 
 import numpy as np
-from torch.utils.data import Subset
+from torch.utils.data import Subset, Dataset
 
 from modules.datasets import BaseDataset
 
 from sklearn.decomposition import PCA
+from sklearn.model_selection import train_test_split
 import scipy.io as sio
 
 
@@ -79,3 +80,24 @@ def load_hsi_dataset(
     patches, label_vec = extract_patches(hsi_pca, labels, patch_size)
 
     return patches, label_vec
+
+
+def get_stratified_subset(dataset: Dataset, subset_ratio: float) -> Dataset:
+    dataset_size = len(dataset)
+
+    labels = []
+    for i in range(dataset_size):
+        label = dataset[i][1]
+        labels.append(label)
+
+    indices = np.arange(dataset_size)
+
+    subset_indices, _ = train_test_split(
+        indices,
+        train_size=subset_ratio,
+        stratify=labels,
+    )
+
+    subset_dataset = Subset(dataset, subset_indices.tolist())
+
+    return subset_dataset
