@@ -99,6 +99,7 @@ class BaseSLTrainer:
             metrics=deepcopy(self._metrics),
             save_dir=self.save_dir,
             save_name=self.save_student_name,
+            alias="ssl",
         )
         self.student_trainer.train(verbose=verbose)
 
