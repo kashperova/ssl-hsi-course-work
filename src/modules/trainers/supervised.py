@@ -180,7 +180,7 @@ class BaseSupervisedTrainer:
 
         labels = []
         for i in range(dataset_size):
-            label =  dataset[i][1]
+            label = dataset[i][1]
             labels.append(label)
 
         indices = np.arange(dataset_size)
