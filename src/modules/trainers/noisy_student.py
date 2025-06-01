@@ -29,7 +29,6 @@ class NoisyStudentTrainer(BaseSLTrainer):
         teacher_config: BaseTrainConfig,
         student_config: BaseTrainConfig,
         metrics: Metrics,
-        student_transform: Callable,
         temperature: float = 1.0,
         threshold: float = 0.8,
         ema_decay: float = 0.999,
@@ -51,7 +50,6 @@ class NoisyStudentTrainer(BaseSLTrainer):
             ema_decay=ema_decay,
             save_dir=save_dir,
         )
-        self.student_transform = student_transform
         self.temperature = temperature
         self.threshold = threshold
 
@@ -62,8 +60,6 @@ class NoisyStudentTrainer(BaseSLTrainer):
             temperature=self.temperature,
             threshold=self.threshold,
         ).mark(self.unlabeled_dataset)
-        pseudo_dataset.transform = self.student_transform
         labeled_dataset = deepcopy(self.labeled_dataset)
-        labeled_dataset.transform = self.student_transform
 
         return ConcatDataset([pseudo_dataset, labeled_dataset])
