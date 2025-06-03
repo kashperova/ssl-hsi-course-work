@@ -47,7 +47,11 @@ def extract_patches(hsi: np.array, labels: np.array, patch_size=15):
 
 
 def load_hsi_dataset(
-    dataset_name: str, root_dir: str, pca_components: int = 30, patch_size: int = 15
+    dataset_name: str,
+    root_dir: str,
+    pca_components: int = 30,
+    patch_size: int = 15,
+    return_all: bool = False,
 ):
     dataset_files = {
         "IndianPines": {
@@ -72,12 +76,14 @@ def load_hsi_dataset(
 
     assert dataset_name in dataset_files, f"Unsupported dataset: {dataset_name}"
     files = dataset_files[dataset_name]
-
     hsi = sio.loadmat(files["image"])[files["image_key"]].astype(np.float32)
     labels = sio.loadmat(files["labels"])[files["label_key"]].astype(np.int32)
 
     hsi_pca = apply_pca(hsi, pca_components)
     patches, label_vec = extract_patches(hsi_pca, labels, patch_size)
+
+    if return_all:
+        return hsi, hsi_pca, labels, patches, label_vec
 
     return patches, label_vec
 
